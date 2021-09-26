@@ -1,0 +1,16 @@
+DECLARE @path VARCHAR(MAX)
+SELECT @path = SUBSTRING(path, 1, LEN(path) - CHARINDEX('_', REVERSE(path))) + '.trc'
+FROM sys.traces
+WHERE is_default = 1
+SELECT e.name       AS Name
+     , t.DatabaseName
+     , t.ObjectName as Deleted_Object
+     , t.LoginName  as 'WhoDeleted'
+     , t.StartTime  as 'Time'
+     , t.HostName   'Hostname'
+     , t.ServerName
+FROM sys.fn_trace_gettable(@path, 0) t
+    INNER JOIN sys.trace_events      e
+        ON t.EventClass = e.trace_event_id
+where e.name = 'Object:Deleted'
+      and DatabaseID > 4
