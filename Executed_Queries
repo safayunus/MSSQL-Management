@@ -1,0 +1,18 @@
+SELECT 
+  TOP 1000 deqs.last_execution_time AS [Time], 
+  dest.text AS [Query], 
+ -- deqs.execution_count, 
+  deqs.total_logical_writes,
+  deqs.total_logical_reads,
+  deqs.total_physical_reads,
+  deqs.max_dop,
+
+  deqs.last_elapsed_time,
+    deqs.max_elapsed_time
+	
+
+
+FROM 
+  sys.dm_exec_query_stats AS deqs CROSS APPLY sys.dm_exec_sql_text(deqs.sql_handle) AS dest 
+ORDER BY 
+  deqs.last_execution_time DESC
