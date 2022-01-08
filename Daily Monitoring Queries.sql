@@ -136,3 +136,15 @@ FROM sys.server_principals AS spR
      JOIN sys.server_principals AS spU ON srm.member_principal_id=spU.principal_id
 WHERE spR.[type]='R'
 GROUP BY spU.name
+
+
+-- List DB and owners
+SELECT name, suser_sname(owner_sid) AS DBOwner FROM sys.databases
+
+
+-- List Jobs and owners
+SELECT s.name AS JobName, l.name AS JobOwner
+FROM msdb..sysjobs s
+LEFT JOIN master.sys.syslogins l ON s.owner_sid = l.sid
+WHERE l.name IS NOT NULL
+ORDER by l.name
