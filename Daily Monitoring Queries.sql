@@ -148,3 +148,12 @@ FROM msdb..sysjobs s
 LEFT JOIN master.sys.syslogins l ON s.owner_sid = l.sid
 WHERE l.name IS NOT NULL
 ORDER by l.name
+
+-- number of connections per DB
+SELECT DB_NAME(dbid) as DBName,
+       COUNT(dbid) as NumberOfConnections,
+       loginame as LoginName
+FROM sys.sysprocesses
+WHERE dbid > 0
+GROUP BY dbid,
+         loginame
